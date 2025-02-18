@@ -1,4 +1,4 @@
-package mydb
+package db
 
 import (
 	"context"

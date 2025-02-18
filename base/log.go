@@ -60,7 +60,7 @@ func InitLogger(conf LogConfig) Logger {
 	fmt.Printf("日志路径：%v\n", conf.Path)
 
 	zap.ReplaceGlobals(newZapLogger(conf))
-	return newMyZapLogger(zap.S())
+	return newDefaultZapLogger(zap.S())
 }
 
 func newZapLogger(conf LogConfig) *zap.Logger {
@@ -106,17 +106,17 @@ func newZapLoggerConsoleCore(level zapcore.Level) zapcore.Core {
 	return zapcore.NewCore(enc, ws, level)
 }
 
-type MyZapLogger struct {
+type DefaultZapLogger struct {
 	traceID string
 	tag     string
 	log     *zap.SugaredLogger
 }
 
-func newMyZapLogger(log *zap.SugaredLogger) Logger {
-	return MyZapLogger{log: log}
+func newDefaultZapLogger(log *zap.SugaredLogger) Logger {
+	return DefaultZapLogger{log: log}
 }
 
-func (l MyZapLogger) WithTrace(ctx context.Context, traceContextKey any) Logger {
+func (l DefaultZapLogger) WithTrace(ctx context.Context, traceContextKey any) Logger {
 	if traceContextKey == nil {
 		traceContextKey = TraceContextKey
 	}
@@ -126,26 +126,26 @@ func (l MyZapLogger) WithTrace(ctx context.Context, traceContextKey any) Logger 
 		traceID = fmt.Sprintf("<%v>", value)
 	}
 
-	return MyZapLogger{
+	return DefaultZapLogger{
 		traceID: traceID,
 		tag:     l.tag,
 		log:     l.log,
 	}
 }
 
-func (l MyZapLogger) WithTag(tag string) Logger {
+func (l DefaultZapLogger) WithTag(tag string) Logger {
 	if tag != "" {
 		tag = "[" + tag + "]"
 	}
 
-	return MyZapLogger{
+	return DefaultZapLogger{
 		traceID: l.traceID,
 		tag:     tag,
 		log:     l.log,
 	}
 }
 
-func (l MyZapLogger) Debug(args ...any) {
+func (l DefaultZapLogger) Debug(args ...any) {
 	prefix := l.getPrefix()
 
 	if prefix == "" {
@@ -155,7 +155,7 @@ func (l MyZapLogger) Debug(args ...any) {
 	}
 }
 
-func (l MyZapLogger) Info(args ...any) {
+func (l DefaultZapLogger) Info(args ...any) {
 	prefix := l.getPrefix()
 
 	if prefix == "" {
@@ -165,7 +165,7 @@ func (l MyZapLogger) Info(args ...any) {
 	}
 }
 
-func (l MyZapLogger) Warn(args ...any) {
+func (l DefaultZapLogger) Warn(args ...any) {
 	prefix := l.getPrefix()
 
 	if prefix == "" {
@@ -175,7 +175,7 @@ func (l MyZapLogger) Warn(args ...any) {
 	}
 }
 
-func (l MyZapLogger) Error(args ...any) {
+func (l DefaultZapLogger) Error(args ...any) {
 	prefix := l.getPrefix()
 
 	if prefix == "" {
@@ -185,7 +185,7 @@ func (l MyZapLogger) Error(args ...any) {
 	}
 }
 
-func (l MyZapLogger) Debugf(format string, args ...any) {
+func (l DefaultZapLogger) Debugf(format string, args ...any) {
 	prefix := l.getPrefix()
 
 	if prefix == "" {
@@ -195,7 +195,7 @@ func (l MyZapLogger) Debugf(format string, args ...any) {
 	}
 }
 
-func (l MyZapLogger) Infof(format string, args ...any) {
+func (l DefaultZapLogger) Infof(format string, args ...any) {
 	prefix := l.getPrefix()
 
 	if prefix == "" {
@@ -205,7 +205,7 @@ func (l MyZapLogger) Infof(format string, args ...any) {
 	}
 }
 
-func (l MyZapLogger) Warnf(format string, args ...any) {
+func (l DefaultZapLogger) Warnf(format string, args ...any) {
 	prefix := l.getPrefix()
 
 	if prefix == "" {
@@ -215,7 +215,7 @@ func (l MyZapLogger) Warnf(format string, args ...any) {
 	}
 }
 
-func (l MyZapLogger) Errorf(format string, args ...any) {
+func (l DefaultZapLogger) Errorf(format string, args ...any) {
 	prefix := l.getPrefix()
 
 	if prefix == "" {
@@ -225,11 +225,11 @@ func (l MyZapLogger) Errorf(format string, args ...any) {
 	}
 }
 
-func (l MyZapLogger) Sync() {
+func (l DefaultZapLogger) Sync() {
 	l.log.Sync()
 }
 
-func (l MyZapLogger) getPrefix() string {
+func (l DefaultZapLogger) getPrefix() string {
 	if l.traceID != "" && l.tag != "" {
 		return l.traceID + " " + l.tag
 	}

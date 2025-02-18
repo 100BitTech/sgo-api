@@ -10,7 +10,7 @@ const (
 	EnvPre  = "pre"  // 预发
 	EnvProd = "prod" // 生产
 
-	TraceContextKey = "my.trace_id"
+	TraceContextKey = "sgo.trace_id"
 )
 
 var (
