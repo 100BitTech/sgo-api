@@ -1,2 +1,1 @@
-# base-api
-基础 API 服务
+# sgo-api
