@@ -11,6 +11,7 @@ require (
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/samber/oops v1.16.0
 	go.uber.org/zap v1.27.0
+	gorm.io/gorm v1.25.12
 )
 
 require (
